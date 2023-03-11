@@ -9,36 +9,30 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useNavigate } from 'react-router-dom';
+
 import { BASE_API_URL } from '../utils/constants';
-import ky from 'ky';
 import { ITokens } from './interfaces/tokens.interface';
-import { UserContext } from '../context/userContext';
-import { useContext } from 'react';
+import { makeRequest } from '../utils/makeRequest';
 
 const theme = createTheme();
 
-export const Registration = () => {
-  const user = useContext(UserContext)
-  console.log('user2: ', user)
+export const Login = () => {
+  const navigate = useNavigate();
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    // const email = data.get('email');
-    // const password = data.get('password');
-    // const confirmPassword = data.get('confirmPassword');
     const body = {
-      email: data.get('email'),
+      username: data.get('email'),
       password: data.get('password'),
-      passwordConfirm: data.get('confirmPassword'),
     }
-    console.log(body);
-    const tokens: ITokens|undefined = await ky.post(`${BASE_API_URL}/user`, {json: body}).json()
-      .catch((error) => {
-        console.log(error)
-      }) as ITokens|undefined;
+
+    const tokens: ITokens|undefined = await makeRequest({ url: `${BASE_API_URL}/user/login`, method: 'POST', body })
+      .catch((error: Error) => console.log(error))
 
     if (tokens) {
-      localStorage.setItem('@myMapp:access_token', tokens.access_token);
+      localStorage.setItem('@myMapp:access_token', tokens.token);
+      navigate('/welcome')
     }
   };
 
@@ -57,31 +51,10 @@ export const Registration = () => {
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign up
+            Sign in
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  autoComplete="given-name"
-                  name="firstName"
-                  required
-                  fullWidth
-                  id="firstName"
-                  label="First Name"
-                  autoFocus
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="lastName"
-                  autoComplete="family-name"
-                />
-              </Grid>
               <Grid item xs={12}>
                 <TextField
                   required
@@ -103,17 +76,6 @@ export const Registration = () => {
                   autoComplete="new-password"
                 />
               </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="confirmPassword"
-                  label="Confirm Password"
-                  type="password"
-                  id="confirmPassword"
-                  autoComplete="new-password"
-                />
-              </Grid>
             </Grid>
             <Button
               type="submit"
@@ -121,12 +83,12 @@ export const Registration = () => {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign Up
+              Sign in
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="/signin" variant="body2">
-                  Already have an account? Sign in
+                <Link href="/signup" variant="body2">
+                  Sign up
                 </Link>
               </Grid>
             </Grid>

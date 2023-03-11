@@ -1,14 +1,42 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, redirect } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
 import { Registration } from './auth/Registration';
+import { Footer } from './ui/footer';
+import { IUser } from './auth/interfaces/user.interface';
+import { UserContext, userDefault } from './context/userContext';
+import { BASE_API_URL } from './utils/constants';
+import { makeRequest } from './utils/makeRequest';
+import { Login } from './auth/Login';
+import { Welcome } from './auth/Welcome';
 
 export const App = () => {
+  const [user, setUser] = useState<IUser>(userDefault);
+
+  useEffect(() => {
+    makeRequest({ url: `${BASE_API_URL}/user` })
+      .then((userFromDb: IUser) => {
+        if (!userFromDb) {
+          redirect('/');
+        }
+        console.log(userFromDb)
+        setUser(userFromDb);
+      });
+  }, [])
+
   return (
-    <Routes>
-      {/* Public routes */}
-      <Route path="/signup" element={<Registration />} />
-      <Route index element={<Registration />} />
-      {/* Private routes */}
-    </Routes>
+    <>
+      <UserContext.Provider value={user}>
+        <Routes>
+          {/* Public routes */}
+          <Route path="/signup" element={<Registration />} />
+          <Route path="/signin" element={<Login />} />
+          <Route index element={<Registration />} />
+          {/* Private routes */}
+          <Route path="/welcome" element={user.email && <Welcome />} />
+        </Routes>
+      </UserContext.Provider>
+      <Footer />
+    </>
   );
 }
