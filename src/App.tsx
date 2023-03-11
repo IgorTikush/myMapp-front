@@ -19,7 +19,7 @@ export const App = () => {
         if (!userFromDb) {
           redirect('/');
         }
-        console.log(userFromDb)
+
         setUser(userFromDb);
       });
   }, [])
