@@ -11,9 +11,9 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 
-import { BASE_API_URL } from '../utils/constants';
 import { ITokens } from './interfaces/tokens.interface';
-import { makeRequest } from '../utils/makeRequest';
+import { makeRequest } from '../../utils/makeRequest';
+import { BASE_API_URL } from '../../utils/constants';
 
 const theme = createTheme();
 

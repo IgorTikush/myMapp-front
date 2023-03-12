@@ -1,6 +1,6 @@
 import { createContext, Context } from 'react';
 
-import { IUser } from '../auth/interfaces/user.interface';
+import { IUser } from '../features/auth/interfaces/user.interface';
 
 export const userDefault = {
   _id: '',

@@ -1,4 +1,6 @@
 import * as React from 'react';
+import ky from 'ky';
+import { useContext } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -9,11 +11,10 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { BASE_API_URL } from '../utils/constants';
-import ky from 'ky';
+
+import { BASE_API_URL } from '../../utils/constants';
+import { UserContext } from '../../context/userContext';
 import { ITokens } from './interfaces/tokens.interface';
-import { UserContext } from '../context/userContext';
-import { useContext } from 'react';
 
 const theme = createTheme();
 
