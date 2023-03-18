@@ -1,38 +1,40 @@
-import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
+import CssBaseline from '@mui/material/CssBaseline';
+import Grid from '@mui/material/Grid';
+import Link from '@mui/material/Link';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { ITokens } from './interfaces/tokens.interface';
-import { makeRequest } from '../../utils/makeRequest';
 import { BASE_API_URL } from '../../utils/constants';
+import { makeRequest } from '../../utils/makeRequest';
 
 const theme = createTheme();
 
-export const Login = () => {
+export const Login = (): JSX.Element => {
   const navigate = useNavigate();
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  // const user = useContext(UserContext);
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const body = {
       username: data.get('email'),
       password: data.get('password'),
-    }
+    };
 
     const tokens: ITokens|undefined = await makeRequest({ url: `${BASE_API_URL}/user/login`, method: 'POST', body })
-      .catch((error: Error) => console.log(error))
+      .catch((error: Error) => console.log(error));
 
     if (tokens) {
       localStorage.setItem('@myMapp:access_token', tokens.token);
-      navigate('/welcome')
+      navigate('/home');
     }
   };
 
@@ -97,4 +99,4 @@ export const Login = () => {
       </Container>
     </ThemeProvider>
   );
-}
+};

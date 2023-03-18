@@ -1,14 +1,28 @@
-import { Navigate } from 'react-router-dom';
-import { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
+import { BASE_API_URL } from './constants';
+import { makeRequest } from './makeRequest';
 import { UserContext } from '../context/userContext';
+import { IUser } from '../features/auth/interfaces/user.interface';
 
-export const Private = (Component: JSX.Element) => {
-  const user = useContext(UserContext);
-  console.log('user: ', user);
-  if (!user.email) {
+export const Private = ({ children }: any): JSX.Element => {
+  const [showComponent, setShowComponent] = useState<boolean>(false);
 
-  }
+  const { updateUser } = useContext(UserContext);
 
-  return user.email ? Component : <Navigate to='/' />;
-}
+  useEffect(() => {
+    makeRequest({ url: `${BASE_API_URL}/user` })
+      .then((userFromDb: IUser) => {
+        console.log(userFromDb);
+        if (!userFromDb) {
+          // redirect('/');
+        }
+
+        setShowComponent(true);
+
+        updateUser(userFromDb);
+      });
+  }, []);
+
+  return showComponent ? children : <>guy</>;
+};

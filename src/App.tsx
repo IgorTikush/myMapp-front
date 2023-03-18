@@ -1,28 +1,17 @@
-import { Routes, Route, redirect } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
 
-import { Registration } from './features/auth/Registration';
-import { Footer } from './ui/footer';
-import { IUser } from './features/auth/interfaces/user.interface';
-import { UserContext, userDefault } from './context/userContext';
-import { BASE_API_URL } from './utils/constants';
-import { makeRequest } from './utils/makeRequest';
+import { IUserCtx, UserContext } from './context/userContext';
 import { Login } from './features/auth/Login';
+import { Registration } from './features/auth/Registration';
 import { Welcome } from './features/auth/Welcome';
+import { Home } from './features/map/home';
+import { useUser } from './hooks/user.hook';
+import { Footer } from './ui/footer';
+import { Private } from './utils/privateRoute';
 
-export const App = () => {
-  const [user, setUser] = useState<IUser>(userDefault);
-
-  useEffect(() => {
-    makeRequest({ url: `${BASE_API_URL}/user` })
-      .then((userFromDb: IUser) => {
-        if (!userFromDb) {
-          redirect('/');
-        }
-
-        setUser(userFromDb);
-      });
-  }, [])
+export const App = (): JSX.Element => {
+  const user: IUserCtx = useUser();
 
   return (
     <>
@@ -33,10 +22,15 @@ export const App = () => {
           <Route path="/signin" element={<Login />} />
           <Route index element={<Registration />} />
           {/* Private routes */}
-          <Route path="/welcome" element={user.email && <Welcome />} />
+          <Route path="/home" element={
+            <Private>
+              <Home />
+            </Private>
+          } />
+          <Route path="/maps/:id" element={<Welcome />} />
         </Routes>
       </UserContext.Provider>
       <Footer />
     </>
   );
-}
+};

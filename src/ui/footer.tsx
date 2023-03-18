@@ -1,23 +1,17 @@
-import * as React from 'react';
-import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
+import Typography from '@mui/material/Typography';
+import * as React from 'react';
 
-function Copyright(props: any) {
-  return (
-    <Typography sx={{ bottom: 0, position: 'fixed'}} variant="body2" color="text.secondary" align="center" {...props}>
+export const Footer = (props: any): JSX.Element => (
+  <div style={{ bottom: 0, position: 'fixed', width: '100%' }}>
+    <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
       <Link color="inherit" href="https://mui.com/">
         Your Website
-      </Link>{' '}
+      </Link>
+      {' '}
       {new Date().getFullYear()}
       {'.'}
     </Typography>
-  );
-}
-
-export const Footer = () => {
-  return (
-    <Copyright sx={{ mt: 5 }} />
-  );
-}
-
+  </div>
+);

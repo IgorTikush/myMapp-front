@@ -1,45 +1,46 @@
-import * as React from 'react';
-import ky from 'ky';
-import { useContext } from 'react';
 import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
+import CssBaseline from '@mui/material/CssBaseline';
+import Grid from '@mui/material/Grid';
+import Link from '@mui/material/Link';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import ky from 'ky';
+import * as React from 'react';
+import { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { BASE_API_URL } from '../../utils/constants';
-import { UserContext } from '../../context/userContext';
 import { ITokens } from './interfaces/tokens.interface';
+import { UserContext } from '../../context/userContext';
+import { BASE_API_URL } from '../../utils/constants';
 
 const theme = createTheme();
 
-export const Registration = () => {
-  const user = useContext(UserContext)
-  console.log('user2: ', user)
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+export const Registration = (): JSX.Element => {
+  const { map } = useContext(UserContext);
+  const navigate = useNavigate();
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    // const email = data.get('email');
-    // const password = data.get('password');
-    // const confirmPassword = data.get('confirmPassword');
+
     const body = {
       email: data.get('email'),
       password: data.get('password'),
       passwordConfirm: data.get('confirmPassword'),
-    }
-    console.log(body);
-    const tokens: ITokens|undefined = await ky.post(`${BASE_API_URL}/user`, {json: body}).json()
+    };
+
+    const tokens: ITokens|undefined = await ky.post(`${BASE_API_URL}/user`, { json: body }).json()
       .catch((error) => {
-        console.log(error)
+        console.log(error);
       }) as ITokens|undefined;
 
     if (tokens) {
       localStorage.setItem('@myMapp:access_token', tokens.access_token);
+      navigate(`/user/${map._id}`);
     }
   };
 
@@ -136,4 +137,4 @@ export const Registration = () => {
       </Container>
     </ThemeProvider>
   );
-}
+};

@@ -6,8 +6,12 @@ export const userDefault = {
   _id: '',
   email: '',
   username: '',
+  map: {},
+  updateUser: (): null => null,
+};
+
+export interface IUserCtx extends IUser {
+  updateUser: (userInfo: IUser) => void;
 }
 
-export const  UserContext: Context<IUser> = createContext(userDefault);
-
-
+export const UserContext: Context<IUserCtx> = createContext<IUserCtx>(userDefault);

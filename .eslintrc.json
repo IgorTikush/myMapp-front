@@ -8,11 +8,15 @@
     "eslint:recommended",
     "plugin:react/recommended",
     "plugin:@typescript-eslint/recommended",
-//    "plugin:import/recommended",
-//    "plugin:import/typescript",
+    "plugin:import/recommended",
+    "plugin:import/typescript",
     "plugin:react-hooks/recommended"
+//    "@typescript-eslint/no-unused-vars"
   ],
   "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "react"
+  ],
   "parserOptions": {
     "ecmaFeatures": {
       "jsx": true
@@ -20,10 +24,6 @@
     "ecmaVersion": 2021,
     "sourceType": "module"
   },
-  "plugins": [
-    "react",
-    "@typescript-eslint"
-  ],
   "rules": {
     "react-hooks/exhaustive-deps": ["off"],
     "@typescript-eslint/no-explicit-any": [
@@ -173,9 +173,6 @@
       "warn"
     ],
     "no-undefined": [
-      "warn"
-    ],
-    "no-underscore-dangle": [
       "warn"
     ],
     "no-unneeded-ternary": [
@@ -363,12 +360,6 @@
     ],
     "@typescript-eslint/no-var-requires": [
       "off"
-    ],
-    "no-unused-vars": [
-      "warn",
-      {
-        "varsIgnorePattern": "_"
-      }
     ],
     "import/namespace": [
       "off"
