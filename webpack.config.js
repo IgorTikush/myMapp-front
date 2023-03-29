@@ -1,6 +1,8 @@
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 
+// eslint-disable-next-line import/default
+import CopyPlugin from 'copy-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 
 const htmlPlugin = new HtmlWebpackPlugin({
@@ -11,8 +13,16 @@ const htmlPlugin = new HtmlWebpackPlugin({
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+const copyPlugin = new CopyPlugin(
+  {
+    patterns: [
+      { from: path.resolve(__dirname, 'src', 'countries.json'), to: path.resolve(__dirname, 'dist') },
+    ],
+  },
+);
+
 export default {
-  devtool: "source-map",
+  devtool: 'source-map',
   mode: 'production',
   entry: './src/index.tsx',
   output: {
@@ -41,6 +51,7 @@ export default {
   // },
   plugins: [
     htmlPlugin,
+    copyPlugin,
   ],
   experiments: {
     lazyCompilation: true,

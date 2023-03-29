@@ -6,6 +6,7 @@ import { Login } from './features/auth/Login';
 import { Registration } from './features/auth/Registration';
 import { Welcome } from './features/auth/Welcome';
 import { Home } from './features/map/home';
+import { Map } from './features/map/map';
 import { useUser } from './hooks/user.hook';
 import { Footer } from './ui/footer';
 import { Private } from './utils/privateRoute';
@@ -27,7 +28,11 @@ export const App = (): JSX.Element => {
               <Home />
             </Private>
           } />
-          <Route path="/maps/:id" element={<Welcome />} />
+          <Route path="/map/:id" element={
+            <Private>
+              <Map />
+            </Private>
+          } />
         </Routes>
       </UserContext.Provider>
       <Footer />
