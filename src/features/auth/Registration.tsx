@@ -39,7 +39,7 @@ export const Registration = (): JSX.Element => {
       }) as ITokens|undefined;
 
     if (tokens) {
-      localStorage.setItem('@myMapp:access_token', tokens.access_token);
+      localStorage.setItem('@myMapp:access_token', tokens.token);
       navigate(`/home`);
     }
   };
