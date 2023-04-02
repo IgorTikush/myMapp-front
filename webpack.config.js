@@ -60,9 +60,9 @@ export default {
     htmlPlugin,
     copyPlugin,
   ],
-  experiments: {
-    lazyCompilation: true,
-  },
+  // experiments: {
+  //   lazyCompilation: true,
+  // },
   devServer: {
     historyApiFallback: true,
   },

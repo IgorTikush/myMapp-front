@@ -40,7 +40,7 @@ export const Registration = (): JSX.Element => {
 
     if (tokens) {
       localStorage.setItem('@myMapp:access_token', tokens.access_token);
-      navigate(`/user/${map._id}`);
+      navigate(`/home`);
     }
   };
 
