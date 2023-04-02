@@ -4,12 +4,12 @@ import { Routes, Route } from 'react-router-dom';
 import { IUserCtx, UserContext } from './context/userContext';
 import { Login } from './features/auth/Login';
 import { Registration } from './features/auth/Registration';
-import { Welcome } from './features/auth/Welcome';
 import { Home } from './features/map/home';
 import { Map } from './features/map/map';
 import { useUser } from './hooks/user.hook';
 import { Footer } from './ui/footer';
 import { Private } from './utils/privateRoute';
+import './stylesheet.css';
 
 export const App = (): JSX.Element => {
   const user: IUserCtx = useUser();

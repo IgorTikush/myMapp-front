@@ -1,11 +1,12 @@
-import React, { useContext, useEffect, useRef } from 'react';
-import { UserContext } from '../../context/userContext';
-import { useNavigate, useParams } from 'react-router-dom';
 import mapboxgl from 'mapbox-gl';
+import React, { useContext, useEffect, useRef } from 'react';
+import { useParams } from 'react-router-dom';
+
 import { mapboxToken } from '../../../config';
+import { UserContext } from '../../context/userContext';
 import countries from '../../countries.json';
-import { makeRequest } from '../../utils/makeRequest';
 import { BASE_API_URL } from '../../utils/constants';
+import { makeRequest } from '../../utils/makeRequest';
 
 export const Map = (): JSX.Element => {
   const visitedCountries = useRef<any>([]);
@@ -13,7 +14,6 @@ export const Map = (): JSX.Element => {
   const map = useRef<any>(null);
 
   const { map: mapInfo } = useContext(UserContext);
-  const navigate = useNavigate();
 
   const { id: mapId } = useParams();
 
@@ -23,13 +23,15 @@ export const Map = (): JSX.Element => {
     if (!mapInfo._id || map.current) {
       return;
     }
-    console.log('mapId', mapId);
+
     makeRequest({ url: `${BASE_API_URL}/map/${mapId}`, method: 'GET' }).then((res: any) => {
       console.log('request');
       console.log(res);
       visitedCountries.current = res.visitedCountries;
-    });
+    }).then(initMap);
+  },[]);
 
+  const initMap = (): void => {
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/streets-v12',
@@ -69,6 +71,13 @@ export const Map = (): JSX.Element => {
           ],
         },
       });
+
+      visitedCountries.current.forEach((countryId: number) => {
+        map.current.setFeatureState(
+          { source: 'countries', id: countryId },
+          { hover: true },
+        );
+      });
     });
 
     map.current.on('mousemove', 'country', (event: any) => {
@@ -90,7 +99,7 @@ export const Map = (): JSX.Element => {
       );
     });
 
-    map.current.on('mouseleave', 'country', ()=> {
+    map.current.on('mouseleave', 'country', () => {
       if (!hoveredStateId || visitedCountries.current.includes(hoveredStateId)) {
         return;
       }
@@ -123,9 +132,9 @@ export const Map = (): JSX.Element => {
       visitedCountries.current = [...visitedCountries.current, visitedCountryID];
       makeRequest({ url: `${BASE_API_URL}/map/${mapId}/add_country`, method: 'PATCH', body: { countryIdToAdd: event.features[0].id } });
     });
-  },[]);
+  };
 
   return (
     <div ref={mapContainer} style={{ height: 500 }} />
   );
-}
+};

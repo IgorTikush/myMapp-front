@@ -38,10 +38,17 @@ export default {
         loader: 'ts-loader',
       },
     },
+    {
+      test: /\.(less|css)$/,
+      use: [
+        { loader: 'style-loader' },
+        { loader: 'css-loader' },
+      ],
+    },
     ],
   },
   resolve: {
-    extensions: ['.ts', '.tsx', '.js'],
+    extensions: ['.ts', '.tsx', '.js', '.css'],
   },
   // optimization: {
   //   minimize: true,
