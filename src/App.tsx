@@ -4,6 +4,7 @@ import { Routes, Route } from 'react-router-dom';
 import { IUserCtx, UserContext } from './context/userContext';
 import { Login } from './features/auth/Login';
 import { Registration } from './features/auth/Registration';
+import { GameIndex } from './features/game';
 import { Home } from './features/map/home';
 import { Map } from './features/map/map';
 import { useUser } from './hooks/user.hook';
@@ -26,6 +27,11 @@ export const App = (): JSX.Element => {
           <Route path="/home" element={
             <Private>
               <Home />
+            </Private>
+          } />
+          <Route path="/game" element={
+            <Private>
+              <GameIndex />
             </Private>
           } />
           <Route path="/map/:id" element={
