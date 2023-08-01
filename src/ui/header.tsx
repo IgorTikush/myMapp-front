@@ -10,6 +10,10 @@ export const Header = (): JSX.Element => {
     navigate('/game');
   };
 
+  const redirectToMap = (): void => {
+    navigate('/map');
+  };
+
   return (
     <AppBar position={'static'}>
       <Button
@@ -18,6 +22,13 @@ export const Header = (): JSX.Element => {
         onClick={redirectToGame}
       >
         Play a game
+      </Button>
+      <Button
+        style={{ color: 'black', width: 200, backgroundColor: 'white' }}
+        variant="outlined"
+        onClick={redirectToMap}
+      >
+        My map
       </Button>
     </AppBar>
   );

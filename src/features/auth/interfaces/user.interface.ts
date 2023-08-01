@@ -3,5 +3,7 @@ export interface IUser {
   email: string;
   username: string;
   // TO DO написать интерфейс
-  map: any;
+  map: {
+    _id: string;
+  };
 }

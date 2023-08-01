@@ -6,7 +6,9 @@ export const userDefault = {
   _id: '',
   email: '',
   username: '',
-  map: {},
+  map: {
+    _id: '',
+  },
   updateUser: (): null => null,
 };
 

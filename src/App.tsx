@@ -10,6 +10,7 @@ import { Map } from './features/map/map';
 import { useUser } from './hooks/user.hook';
 import { Footer } from './ui/footer';
 import { Private } from './utils/privateRoute';
+
 import './stylesheet.css';
 
 export const App = (): JSX.Element => {
@@ -35,6 +36,11 @@ export const App = (): JSX.Element => {
             </Private>
           } />
           <Route path="/map/:id" element={
+            <Private>
+              <Map />
+            </Private>
+          } />
+          <Route path="/map" element={
             <Private>
               <Map />
             </Private>
