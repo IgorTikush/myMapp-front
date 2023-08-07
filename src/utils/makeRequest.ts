@@ -6,7 +6,6 @@ export const makeRequest = ({
   body,
 }: { url: string; method?: string; body?: any }): any => {
   const userToken = localStorage.getItem('@myMapp:access_token');
-  console.log(userToken);
   const options: { method: string; headers: { Authorization: string }; json?: any } = {
     method,
     headers: {

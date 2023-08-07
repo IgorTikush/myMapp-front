@@ -23,7 +23,7 @@ export const GameLogic = (props: IGameLogic): JSX.Element => {
 
   const [timeRemaining, setTimeRemaining] = useState(GAME_LENGTH_IN_ML_SECONDS + 2);
   const [open, setOpen] = React.useState(false);
-  const [forceRender, setForceRender] = useState(false);
+  // const [forceRender, setForceRender] = useState(false);
 
   const targetDate = new Date().getTime() + GAME_LENGTH_IN_ML_SECONDS;
 
@@ -68,7 +68,7 @@ export const GameLogic = (props: IGameLogic): JSX.Element => {
   const passCountry = () => {
     const randomCountry: any = getRandomCountry();
     countryToGuess.current = randomCountry.properties.name_long;
-    setForceRender(prev => !prev);
+    // setForceRender(prev => !prev);
     setScore((prev) => prev - 1);
   };
 
