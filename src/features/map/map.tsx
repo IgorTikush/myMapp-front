@@ -143,19 +143,28 @@ export const Map = (): JSX.Element => {
       reader.onload = async (): Promise<void> => {
         // request to get link to upload
         const uploadUrl = await makeRequest({
-          url: `${BASE_API_URL}/map/${mapId}/picture_upload_url`,
+          url: `${BASE_API_URL}/map/${mapId}/picture_upload_url?mapId=${mapId}`,
           method: 'GET',
         });
 
+        console.log(uploadUrl);
         // get download url
 
-        await makeRequest({
-          url: uploadUrl,
-          method: 'POST',
-          body: {
-            file: reader.result,
-          },
-        });
+        const headers: any = {
+          'Content-Type': 'image/jpeg',
+          'Content-Length': (reader.result as any).byteLength,
+        };
+
+        console.log((reader.result as any));
+        const res = await makeRequest({
+          // url: uploadUrl.uploadUrl,
+          url: uploadUrl.uploadUrl,
+          method: 'PUT',
+          headers,
+          body: reader.result,
+        } as any).catch(console.log);
+
+        console.log(res);
       };
     };
 

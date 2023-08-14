@@ -4,13 +4,18 @@ export const makeRequest = ({
   url,
   method = 'GET',
   body,
-}: { url: string; method?: string; body?: any }): any => {
+  headers,
+}: { url: string; method?: string; body?: any; headers?: any }): any => {
   const userToken = localStorage.getItem('@myMapp:access_token');
+  if (!headers) {
+    headers = {
+      Authorization: `Bearer ${userToken}`,
+    };
+  }
+
   const options: { method: string; headers: { Authorization: string }; json?: any } = {
     method,
-    headers: {
-      Authorization: `Bearer ${userToken}`,
-    },
+    headers,
   };
 
   if (body) {
