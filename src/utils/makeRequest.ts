@@ -5,7 +5,8 @@ export const makeRequest = ({
   method = 'GET',
   body,
   headers,
-}: { url: string; method?: string; body?: any; headers?: any }): any => {
+  isBuffer = false,
+}: { url: string; method?: string; body?: any; headers?: any; isBuffer?: boolean }): any => {
   const userToken = localStorage.getItem('@myMapp:access_token');
   if (!headers) {
     headers = {
@@ -13,13 +14,17 @@ export const makeRequest = ({
     };
   }
 
-  const options: { method: string; headers: { Authorization: string }; json?: any } = {
+  const options: { method: string; headers: { Authorization: string }; json?: any; body?: any } = {
     method,
     headers,
   };
 
-  if (body) {
+  if (body && !isBuffer) {
     options.json = body;
+  }
+
+  if (isBuffer) {
+    options.body = body;
   }
 
   return ky(url, options).json();

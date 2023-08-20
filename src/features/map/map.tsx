@@ -161,10 +161,26 @@ export const Map = (): JSX.Element => {
           url: uploadUrl.uploadUrl,
           method: 'PUT',
           headers,
+          isBuffer: true,
           body: reader.result,
-        } as any).catch(console.log);
+        } as any).catch(() => 'error');
 
-        console.log(res);
+        if (res === 'error') {
+          return;
+        }
+
+        const [pictureUrl] = uploadUrl.uploadUrl.split('?');
+
+        await makeRequest({
+          url: `${BASE_API_URL}/picture`,
+          method: 'POST',
+          body: {
+            url: pictureUrl,
+            mapId,
+          },
+        } as any).catch(() => 'error');
+
+        // console.log(res);
       };
     };
 
