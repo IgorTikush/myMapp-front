@@ -12,13 +12,17 @@ import countries from '../../countries.json';
 import { BASE_API_URL } from '../../utils/constants';
 import { makeRequest } from '../../utils/makeRequest';
 
+let uploadPictureCoordinates: number[] = [];
+
 export const Map = (): JSX.Element => {
   const [open, setOpen] = useState(false);
   const [pictureURL, setPictureURL] = useState('');
+  // const [uploadPictureCoordinates, setUploadPictureCoordinates] = useState<number[]>([]);
 
   const visitedCountries = useRef<any>([]);
   const mapContainer = useRef<any>(null);
   const map = useRef<any>(null);
+  const markers = useRef<any>([]);
 
   const handleOpen = (): void => setOpen(true);
   const handleClose = (): void => setOpen(false);
@@ -39,7 +43,9 @@ export const Map = (): JSX.Element => {
     }
 
     makeRequest({ url: `${BASE_API_URL}/map/${mapId}`, method: 'GET' }).then((res: any) => {
+      console.log(res);
       visitedCountries.current = res.visitedCountries;
+      markers.current = res.pictures;
     }).then(initMap);
   },[]);
 
@@ -80,6 +86,25 @@ export const Map = (): JSX.Element => {
           { source: 'countries', id: countryId },
           { hover: true },
         );
+      });
+
+      markers.current.forEach((marker: any) => {
+        const el = document.createElement('div');
+        const width = 30;
+        const height = 30;
+        el.className = 'marker';
+        el.style.backgroundImage = `url(${marker.url})`;
+        el.style.width = `${width}px`;
+        el.style.height = `${height}px`;
+        el.style.backgroundSize = '100%';
+        new mapboxgl.Marker(el)
+          .setLngLat(marker.coordinates)
+          .addTo(map.current);
+
+        el.addEventListener('click', () => {
+          setPictureURL(marker.url);
+          handleOpen();
+        });
       });
     });
 
@@ -163,24 +188,44 @@ export const Map = (): JSX.Element => {
           headers,
           isBuffer: true,
           body: reader.result,
-        } as any).catch(() => 'error');
+        } as any).catch((error: any) => {
+          console.log(error);
+
+          return 'error';
+        });
 
         if (res === 'error') {
           return;
         }
 
         const [pictureUrl] = uploadUrl.uploadUrl.split('?');
-
+        console.log(uploadPictureCoordinates);
         await makeRequest({
           url: `${BASE_API_URL}/picture`,
           method: 'POST',
           body: {
             url: pictureUrl,
             mapId,
+            coordinates: uploadPictureCoordinates,
           },
         } as any).catch(() => 'error');
 
-        // console.log(res);
+        const el = document.createElement('div');
+        const width = 30;
+        const height = 30;
+        el.className = 'marker';
+        el.style.backgroundImage = `url(${pictureUrl})`;
+        el.style.width = `${width}px`;
+        el.style.height = `${height}px`;
+        el.style.backgroundSize = '100%';
+        new mapboxgl.Marker(el)
+          .setLngLat([-83.2192398503004, 37.001400805161055])
+          .addTo(map.current);
+
+        el.addEventListener('click', () => {
+          setPictureURL(pictureUrl);
+          handleOpen();
+        });
       };
     };
 
@@ -202,7 +247,10 @@ export const Map = (): JSX.Element => {
     map.current.on('contextmenu', async (event: any) => {
       const el = document.createElement('div');
       const element = (
-        <div style={{ width: 100, height: 100 }} onClick={handleUploadClick}>
+        <div style={{ width: 100, height: 100 }} onClick={(): void => {
+          handleUploadClick();
+          uploadPictureCoordinates = [event.lngLat.lng, event.lngLat.lat];
+        }}>
           addPhoto
           <input
             type='file'
@@ -214,7 +262,7 @@ export const Map = (): JSX.Element => {
       );
 
       createRoot(el).render(element);
-
+      console.log([event.lngLat.lng, event.lngLat.lat]);
       const popup = new mapboxgl.Popup({ closeOnClick: false })
         .setLngLat([event.lngLat.lng, event.lngLat.lat])
         .setDOMContent(el)
@@ -230,21 +278,6 @@ export const Map = (): JSX.Element => {
 
       // make marker
 
-      // const width = 100;
-      // const height = 100;
-      // el.className = 'marker';
-      // el.style.backgroundImage = `url(https://placekitten.com/g/${width}/${height}/)`;
-      // el.style.width = `${width}px`;
-      // el.style.height = `${height}px`;
-      // el.style.backgroundSize = '100%';
-      // new mapboxgl.Marker(el)
-      //   .setLngLat([event.lngLat.lng, event.lngLat.lat])
-      //   .addTo(map.current);
-      //
-      // el.addEventListener('click', () => {
-      //   setPictureURL('https://placekitten.com/g/1440/680/');
-      //   handleOpen();
-      // });
     });
   };
 
@@ -253,7 +286,7 @@ export const Map = (): JSX.Element => {
       <div ref={mapContainer} style={{ position: 'absolute', top: 0, bottom: 0, width: '100%' }} />
       <Modal open={open} onClose={handleClose}>
         <Box sx={boxStyle}>
-          <img src={pictureURL} alt='Picture' />
+          <img src={pictureURL} alt='Picture' style={{ width: 300 }} />
         </Box>
       </Modal>
     </>

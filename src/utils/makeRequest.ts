@@ -14,9 +14,10 @@ export const makeRequest = ({
     };
   }
 
-  const options: { method: string; headers: { Authorization: string }; json?: any; body?: any } = {
+  const options: any = {
     method,
     headers,
+    timeout: false,
   };
 
   if (body && !isBuffer) {
