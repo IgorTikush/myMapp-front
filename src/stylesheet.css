@@ -2,6 +2,11 @@
   display: none;
 }
 
-body {
+.mapboxgl-ctrl-bottom-left {
+  display: none;
+}
+
+html, body, #root, #root>div {
+  height: 100%;
   margin: 0;
 }

@@ -15,9 +15,9 @@ export const Header = (): JSX.Element => {
   };
 
   return (
-    <AppBar position={'static'}>
+    <AppBar position={'static'} style={{ display: 'flex', flexDirection: 'row' }}>
       <Button
-        style={{ color: 'black', width: 200, backgroundColor: 'white' }}
+        style={{ color: 'black', width: 200, backgroundColor: 'white', marginRight: 20 }}
         variant="outlined"
         onClick={redirectToGame}
       >

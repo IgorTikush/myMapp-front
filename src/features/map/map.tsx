@@ -1,4 +1,4 @@
-import { Box, Modal } from '@mui/material';
+import { Box, Button, Modal } from '@mui/material';
 import mapboxgl from 'mapbox-gl';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -17,6 +17,7 @@ let uploadPictureCoordinates: number[] = [];
 export const Map = (): JSX.Element => {
   const [open, setOpen] = useState(false);
   const [pictureURL, setPictureURL] = useState('');
+  const [pictureId, setPictureId] = useState('');
   // const [uploadPictureCoordinates, setUploadPictureCoordinates] = useState<number[]>([]);
 
   const visitedCountries = useRef<any>([]);
@@ -97,12 +98,14 @@ export const Map = (): JSX.Element => {
         el.style.width = `${width}px`;
         el.style.height = `${height}px`;
         el.style.backgroundSize = '100%';
+        el.style.borderRadius = '50%';
         new mapboxgl.Marker(el)
           .setLngLat(marker.coordinates)
           .addTo(map.current);
 
         el.addEventListener('click', () => {
           setPictureURL(marker.url);
+          setPictureId(marker._id);
           handleOpen();
         });
       });
@@ -148,6 +151,8 @@ export const Map = (): JSX.Element => {
           { hover: false },
         );
         visitedCountries.current = visitedCountries.current.filter((countryId: any) => countryId !== visitedCountryID);
+
+        makeRequest({ url: `${BASE_API_URL}/map/${mapId}/delete_country`, method: 'PATCH', body: { countryIdToDelete: event.features[0].id } });
 
         return;
       }
@@ -218,6 +223,7 @@ export const Map = (): JSX.Element => {
         el.style.width = `${width}px`;
         el.style.height = `${height}px`;
         el.style.backgroundSize = '100%';
+        el.style.borderRadius = '50%';
         new mapboxgl.Marker(el)
           .setLngLat([-83.2192398503004, 37.001400805161055])
           .addTo(map.current);
@@ -251,7 +257,7 @@ export const Map = (): JSX.Element => {
           handleUploadClick();
           uploadPictureCoordinates = [event.lngLat.lng, event.lngLat.lat];
         }}>
-          addPhoto
+          click here to add photo
           <input
             type='file'
             ref={hiddenFileInput}
@@ -267,26 +273,27 @@ export const Map = (): JSX.Element => {
         .setLngLat([event.lngLat.lng, event.lngLat.lat])
         .setDOMContent(el)
         .addTo(map.current);
+    });
+  };
 
-      // upload dialog menu
-
-      // get aws signed link from server
-
-      // upload photo
-
-      // remove popup
-
-      // make marker
-
+  const deletePicture = (): void => {
+    makeRequest({ url: `${BASE_API_URL}/picture/${pictureId}`, method: 'DELETE' }).then(() => {
+      markers.current = markers.current.filter((marker: any) => marker._id !== pictureId);
+      setPictureURL('');
+      setPictureId('');
+      handleClose();
     });
   };
 
   return (
     <>
-      <div ref={mapContainer} style={{ position: 'absolute', top: 0, bottom: 0, width: '100%' }} />
+      <div ref={mapContainer} style={{ width: '100%', height: '90%' }} />
       <Modal open={open} onClose={handleClose}>
         <Box sx={boxStyle}>
           <img src={pictureURL} alt='Picture' style={{ width: 300 }} />
+          <Button onClick={deletePicture}>
+            Delete
+          </Button>
         </Box>
       </Modal>
     </>
