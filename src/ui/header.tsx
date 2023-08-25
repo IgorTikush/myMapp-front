@@ -3,33 +3,36 @@ import Button from '@mui/material/Button';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export const Header = (): JSX.Element => {
+export const Header = ({ isForUnregistered = false }): JSX.Element => {
   const navigate = useNavigate();
 
-  const redirectToGame = (): void => {
-    navigate('/game');
-  };
-
-  const redirectToMap = (): void => {
-    navigate('/map');
+  const redirect = (path: string): void => {
+    navigate(path);
   };
 
   return (
-    <AppBar position={'static'} style={{ display: 'flex', flexDirection: 'row' }}>
-      <Button
+    <AppBar style={{ display: 'flex', flexDirection: 'row' }}>
+      {!isForUnregistered ? <Button
         style={{ color: 'black', width: 200, backgroundColor: 'white', marginRight: 20 }}
         variant="outlined"
-        onClick={redirectToGame}
+        onClick={(): void => redirect('/game')}
       >
         Play a game
-      </Button>
-      <Button
+      </Button> : null}
+      {!isForUnregistered ? <Button
         style={{ color: 'black', width: 200, backgroundColor: 'white' }}
         variant="outlined"
-        onClick={redirectToMap}
+        onClick={(): void => redirect('/map')}
       >
         My map
-      </Button>
+      </Button> : null}
+      {isForUnregistered ? <Button
+        style={{ color: 'black', width: 200, backgroundColor: 'white' }}
+        variant="outlined"
+        onClick={(): void => redirect('/signup')}
+      >
+        Sign up
+      </Button> : null}
     </AppBar>
   );
 };

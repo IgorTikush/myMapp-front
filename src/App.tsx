@@ -9,8 +9,8 @@ import { Home } from './features/map/home';
 import { Map } from './features/map/map';
 import { useUser } from './hooks/user.hook';
 import { Footer } from './ui/footer';
+import { Header } from './ui/header';
 import { Private } from './utils/privateRoute';
-
 import './stylesheet.css';
 
 export const App = (): JSX.Element => {
@@ -36,9 +36,12 @@ export const App = (): JSX.Element => {
             </Private>
           } />
           <Route path="/map/:id" element={
-            <Private>
+            // <Private>
+            <>
+              <Header isForUnregistered={true} />
               <Map />
-            </Private>
+            </>
+            // </Private>
           } />
           <Route path="/map" element={
             <Private>
@@ -47,7 +50,7 @@ export const App = (): JSX.Element => {
           } />
         </Routes>
       </UserContext.Provider>
-      <Footer />
+      {/* <Footer />*/}
     </>
   );
 };

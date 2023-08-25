@@ -14,7 +14,6 @@ export const Private = ({ children }: any): JSX.Element => {
   useEffect(() => {
     makeRequest({ url: `${BASE_API_URL}/user` })
       .then((userFromDb: IUser) => {
-        console.log(userFromDb);
         if (!userFromDb) {
           // redirect('/');
         }

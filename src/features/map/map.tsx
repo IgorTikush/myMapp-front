@@ -36,10 +36,12 @@ export const Map = (): JSX.Element => {
     mapId = mapInfo._id;
   }
 
+  const userCanEdit = mapId === mapInfo._id;
+
   mapboxgl.accessToken = mapboxToken;
   let hoveredStateId: any = null;
   useEffect(() => {
-    if (!mapInfo._id || map.current) {
+    if (!mapId || map.current) {
       return;
     }
 
@@ -111,7 +113,7 @@ export const Map = (): JSX.Element => {
       });
     });
 
-    map.current.on('mousemove', 'country', (event: any) => {
+    userCanEdit && map.current.on('mousemove', 'country', (event: any) => {
       if (event.features.length <= 0) {
         return;
       }
@@ -130,7 +132,7 @@ export const Map = (): JSX.Element => {
       );
     });
 
-    map.current.on('mouseleave', 'country', () => {
+    userCanEdit && map.current.on('mouseleave', 'country', () => {
       if (!hoveredStateId || visitedCountries.current.includes(hoveredStateId)) {
         return;
       }
@@ -142,7 +144,7 @@ export const Map = (): JSX.Element => {
       hoveredStateId = null;
     });
 
-    map.current.on('click', 'country', (event: any) => {
+    userCanEdit && map.current.on('click', 'country', (event: any) => {
       const visitedCountryID = event.features[0].id;
 
       if (visitedCountries.current.includes(visitedCountryID)) {
@@ -250,7 +252,7 @@ export const Map = (): JSX.Element => {
 
     };
 
-    map.current.on('contextmenu', async (event: any) => {
+    userCanEdit && map.current.on('contextmenu', async (event: any) => {
       const el = document.createElement('div');
       const element = (
         <div style={{ width: 100, height: 100 }} onClick={(): void => {
@@ -287,13 +289,13 @@ export const Map = (): JSX.Element => {
 
   return (
     <>
-      <div ref={mapContainer} style={{ width: '100%', height: '90%' }} />
+      <div ref={mapContainer} style={{ width: '100%', height: '100%' }} />
       <Modal open={open} onClose={handleClose}>
         <Box sx={boxStyle}>
           <img src={pictureURL} alt='Picture' style={{ width: 300 }} />
-          <Button onClick={deletePicture}>
+          {userCanEdit ? <Button onClick={deletePicture}>
             Delete
-          </Button>
+          </Button> : null}
         </Box>
       </Modal>
     </>
