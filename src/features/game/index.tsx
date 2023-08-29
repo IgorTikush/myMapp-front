@@ -21,10 +21,10 @@ export const GameIndex = (): JSX.Element => {
   }
 
   return (
-    <>
+    <div style={{ display: 'flex', height: 30, paddingTop: 100, flexWrap: 'wrap', justifyContent: 'center' }}>
       <button onClick={startGame}>
         Start
       </button>
-    </>
+    </div>
   );
 };

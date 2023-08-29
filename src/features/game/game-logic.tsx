@@ -53,7 +53,7 @@ export const GameLogic = (props: IGameLogic): JSX.Element => {
 
   if (!countryToGuess.current) {
     const randomCountry: any = getRandomCountry();
-    countryToGuess.current = randomCountry.properties.name_long;
+    countryToGuess.current = randomCountry.properties.name;
   }
 
   const handleSuccess = () => {
@@ -67,7 +67,7 @@ export const GameLogic = (props: IGameLogic): JSX.Element => {
 
   const passCountry = () => {
     const randomCountry: any = getRandomCountry();
-    countryToGuess.current = randomCountry.properties.name_long;
+    countryToGuess.current = randomCountry.properties.name;
     // setForceRender(prev => !prev);
     setScore((prev) => prev - 1);
   };
@@ -139,7 +139,7 @@ export const GameLogic = (props: IGameLogic): JSX.Element => {
     });
 
     map.current.on('click', 'country', (event: any) => {
-      const clickedCountryName = event.features[0].properties.name_long;
+      const clickedCountryName = event.features[0].properties.name;
       if (clickedCountryName === countryToGuess.current) {
         handleSuccess();
         const randomCountry: any = countries.features[Math.floor(Math.random()*countries.features.length)];
@@ -150,24 +150,31 @@ export const GameLogic = (props: IGameLogic): JSX.Element => {
   };
 
   return (
-    <>
-      <div ref={mapContainer} style={{ height: 500 }} />
-      <>
+    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
         {countryToGuess.current}
-      </>
-      <button onClick={passCountry}>
-        pass
-      </button>
-      Your score:
-      {' '}
-      {score}
-      Time
-      {timeRemaining}
+        <button onClick={passCountry}>
+          pass
+        </button>
+      </div>
+      <div ref={mapContainer} style={{ height: '100%', width: '60%' }} />
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <div>
+          Your score:
+          {' '}
+          {score}
+        </div>
+        <div>
+          Time:
+          {' '}
+          {timeRemaining}
+        </div>
+      </div>
       <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
           Right!
         </Alert>
       </Snackbar>
-    </>
+    </div>
   );
 };

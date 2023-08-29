@@ -11,7 +11,7 @@ export const Header = ({ isForUnregistered = false }): JSX.Element => {
   };
 
   return (
-    <AppBar style={{ display: 'flex', flexDirection: 'row' }}>
+    <AppBar style={{ display: 'flex', flexDirection: 'row', position: 'relative' }}>
       {!isForUnregistered ? <Button
         style={{ color: 'black', width: 200, backgroundColor: 'white', marginRight: 20 }}
         variant="outlined"

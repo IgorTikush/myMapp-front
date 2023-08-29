@@ -38,7 +38,7 @@ export const App = (): JSX.Element => {
           <Route path="/map/:id" element={
             // <Private>
             <>
-              <Header isForUnregistered={true} />
+              <Header isForUnregistered={!!user._id} />
               <Map />
             </>
             // </Private>
