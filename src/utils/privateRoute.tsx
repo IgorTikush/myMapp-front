@@ -19,7 +19,7 @@ export const Private = ({ children }: any): JSX.Element => {
         }
 
         setShowComponent(true);
-
+        console.log('fromDB', userFromDb);
         updateUser(userFromDb);
       });
   }, []);

@@ -4,6 +4,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { createRoot } from 'react-dom/client';
 import { useParams } from 'react-router-dom';
+import heic2any from 'heic2any';
 
 import { boxStyle } from './styles/picture-modal.style.tx';
 import { mapboxToken } from '../../../config';
@@ -169,10 +170,27 @@ export const Map = (): JSX.Element => {
     });
 
     const parseFile = (file: File): void => {
+      console.log(file);
+
       const reader = new FileReader();
       reader.readAsArrayBuffer(file);
+      let result;
 
       reader.onload = async (): Promise<void> => {
+        result = reader.result;
+        if (file.name?.toLowerCase()?.includes('.heic')) {
+          console.log('to heic');
+          const blob =  await heic2any({
+            blob: new Blob([reader.result as ArrayBuffer]),
+            toType: 'image/jpeg',
+            quality: 0.5,
+          });
+
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          result = await blob.arrayBuffer();
+        }
+
         // request to get link to upload
         const uploadUrl = await makeRequest({
           url: `${BASE_API_URL}/map/${mapId}/picture_upload_url?mapId=${mapId}`,
@@ -184,17 +202,18 @@ export const Map = (): JSX.Element => {
 
         const headers: any = {
           'Content-Type': 'image/jpeg',
-          'Content-Length': (reader.result as any).byteLength,
+          'Content-Length': (result as any).byteLength,
         };
 
-        console.log((reader.result as any));
+        console.log((result));
+
         const res = await makeRequest({
           // url: uploadUrl.uploadUrl,
           url: uploadUrl.uploadUrl,
           method: 'PUT',
           headers,
           isBuffer: true,
-          body: reader.result,
+          body: result,
         } as any).catch((error: any) => {
           console.log(error);
 
@@ -202,6 +221,8 @@ export const Map = (): JSX.Element => {
         });
 
         if (res === 'error') {
+          console.log('error');
+
           return;
         }
 
