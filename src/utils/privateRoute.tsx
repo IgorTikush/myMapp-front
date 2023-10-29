@@ -6,7 +6,7 @@ import { UserContext } from '../context/userContext';
 import { IUser } from '../features/auth/interfaces/user.interface';
 import { Header } from '../ui/header';
 
-export const Private = ({ children }: any): JSX.Element => {
+export const Private = ({ children, isProceedAnyway }: any): JSX.Element => {
   const [showComponent, setShowComponent] = useState<boolean>(false);
 
   const { updateUser } = useContext(UserContext);
@@ -24,7 +24,7 @@ export const Private = ({ children }: any): JSX.Element => {
       });
   }, []);
 
-  if (showComponent) {
+  if (showComponent || isProceedAnyway) {
     return (
       <>
         <Header />

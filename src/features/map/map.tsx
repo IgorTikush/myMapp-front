@@ -25,11 +25,12 @@ export const Map = (): JSX.Element => {
   const mapContainer = useRef<any>(null);
   const map = useRef<any>(null);
   const markers = useRef<any>([]);
-
+  const userCanEdit = useRef<boolean>(false);
   const handleOpen = (): void => setOpen(true);
   const handleClose = (): void => setOpen(false);
 
   const { map: mapInfo } = useContext(UserContext);
+  const user = useContext(UserContext);
 
   let { id: mapId } = useParams();
 
@@ -37,7 +38,7 @@ export const Map = (): JSX.Element => {
     mapId = mapInfo._id;
   }
 
-  const userCanEdit = mapId === mapInfo._id;
+  userCanEdit.current = mapId === mapInfo._id;
 
   mapboxgl.accessToken = mapboxToken;
   let hoveredStateId: any = null;
@@ -114,7 +115,11 @@ export const Map = (): JSX.Element => {
       });
     });
 
-    userCanEdit && map.current.on('mousemove', 'country', (event: any) => {
+    map.current.on('mousemove', 'country', (event: any) => {
+      if (!userCanEdit.current) {
+        return;
+      }
+
       if (event.features.length <= 0) {
         return;
       }
@@ -133,7 +138,11 @@ export const Map = (): JSX.Element => {
       );
     });
 
-    userCanEdit && map.current.on('mouseleave', 'country', () => {
+    map.current.on('mouseleave', 'country', () => {
+      if (!userCanEdit.current) {
+        return;
+      }
+
       if (!hoveredStateId || visitedCountries.current.includes(hoveredStateId)) {
         return;
       }
@@ -145,7 +154,11 @@ export const Map = (): JSX.Element => {
       hoveredStateId = null;
     });
 
-    userCanEdit && map.current.on('click', 'country', (event: any) => {
+    map.current.on('click', 'country', (event: any) => {
+      if (!userCanEdit.current) {
+        return;
+      }
+
       const visitedCountryID = event.features[0].id;
 
       if (visitedCountries.current.includes(visitedCountryID)) {
@@ -273,7 +286,11 @@ export const Map = (): JSX.Element => {
 
     };
 
-    userCanEdit && map.current.on('contextmenu', async (event: any) => {
+    map.current.on('contextmenu', async (event: any) => {
+      if (!userCanEdit.current) {
+        return;
+      }
+
       const el = document.createElement('div');
       const element = (
         <div style={{ width: 100, height: 100 }} onClick={(): void => {
@@ -314,7 +331,7 @@ export const Map = (): JSX.Element => {
       <Modal open={open} onClose={handleClose}>
         <Box sx={boxStyle}>
           <img src={pictureURL} alt='Picture' style={{ width: 300 }} />
-          {userCanEdit ? <Button onClick={deletePicture}>
+          {userCanEdit.current ? <Button onClick={deletePicture}>
             Delete
           </Button> : null}
         </Box>

@@ -36,12 +36,11 @@ export const App = (): JSX.Element => {
             </Private>
           } />
           <Route path="/map/:id" element={
-            // <Private>
-            <>
-              <Header />
-              <Map />
-            </>
-            // </Private>
+            <Private isProceedAnyway={true}>
+              <>
+                <Map />
+              </>
+            </Private>
           } />
           <Route path="/map" element={
             <Private>
