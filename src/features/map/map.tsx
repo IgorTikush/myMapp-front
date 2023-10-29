@@ -30,7 +30,6 @@ export const Map = (): JSX.Element => {
   const handleClose = (): void => setOpen(false);
 
   const { map: mapInfo } = useContext(UserContext);
-  const user = useContext(UserContext);
 
   let { id: mapId } = useParams();
 
