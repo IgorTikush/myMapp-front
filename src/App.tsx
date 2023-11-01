@@ -5,6 +5,7 @@ import { IUserCtx, UserContext } from './context/userContext';
 import { Login } from './features/auth/Login';
 import { Registration } from './features/auth/Registration';
 import { GameIndex } from './features/game';
+import { Landing } from './features/landing';
 import { Home } from './features/map/home';
 import { Map } from './features/map/map';
 import { useUser } from './hooks/user.hook';
@@ -23,7 +24,7 @@ export const App = (): JSX.Element => {
           {/* Public routes */}
           <Route path="/signup" element={<Registration />} />
           <Route path="/signin" element={<Login />} />
-          <Route index element={<Registration />} />
+          <Route index element={<Landing />} />
           {/* Private routes */}
           <Route path="/home" element={
             <Private>

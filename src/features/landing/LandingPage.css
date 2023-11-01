@@ -1,0 +1,60 @@
+.landing-page {
+  /*max-width: 960px;*/
+  margin: 0 auto;
+  padding: 10px;
+  text-align: center;
+}
+
+.header h1 {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.sub-heading {
+  font-size: 18px;
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.features {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 50px;
+}
+
+.feature {
+  flex: 1;
+  margin: 0 10px;
+}
+
+.feature h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.centered-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+
+.sign-up-button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.footer {
+  background-color: #f8f8f8;
+  padding: 20px;
+}
