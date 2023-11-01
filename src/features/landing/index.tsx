@@ -14,22 +14,22 @@ export const Landing = (): JSX.Element => {
     <div className="landing-page">
       <Helmet>
         <title>
-          Online Stretch Map - Explore, Share, and Play!
+          Gigamapp. Online Scratch Map - Explore, Share, and Play!
         </title>
         <meta name="description"
           // eslint-disable-next-line max-len
-          content="Explore the world, add your photos to places on the map, play games, and learn about different countries. Join us on the Online Stretch Map adventure!" />
-        <meta property="og:title" content="Online Stretch Map - Explore, Share, and Play!" />
+          content="Explore the world, add your photos to places on the map, play games, and learn about different countries. Join us on the Online Scratch Map adventure!" />
+        <meta property="og:title" content="Gigamapp. Online Scratch Map - Explore, Share, and Play!" />
         <meta property="og:description"
           // eslint-disable-next-line max-len
-          content="Explore the world, add your photos to places on the map, play games, and learn about different countries. Join us on the Online Stretch Map adventure!" />
+          content="Explore the world, add your photos to places on the map, play games, and learn about different countries. Join us on the Online Scratch Map adventure!" />
         <meta property="og:image" content="URL_TO_YOUR_APP_LOGO_OR_FEATURED_IMAGE" />
-        <meta property="og:url" content="URL_TO_YOUR_LANDING_PAGE" />
+        <meta property="og:url" content="https://gigamapp.com/" />
       </Helmet>
 
       <header className="header">
         <h1>
-          Welcome to Online Stretch Map!
+          Welcome to Online Scratch Map!
         </h1>
         <p className="sub-heading">
           Explore the World, Share Your Adventures, and Test Your Knowledge
