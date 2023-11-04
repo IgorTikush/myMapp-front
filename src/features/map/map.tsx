@@ -1,10 +1,11 @@
-import { Box, Button, Modal } from '@mui/material';
+import { Box, Button, Modal, CircularProgress } from '@mui/material';
+import heic2any from 'heic2any';
 import mapboxgl from 'mapbox-gl';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { createRoot } from 'react-dom/client';
 import { useParams } from 'react-router-dom';
-import heic2any from 'heic2any';
+import { AdsClick } from '@mui/icons-material';
 
 import { boxStyle } from './styles/picture-modal.style.tx';
 import { mapboxToken } from '../../../config';
@@ -13,12 +14,13 @@ import countries from '../../countries.json';
 import { BASE_API_URL } from '../../utils/constants';
 import { makeRequest } from '../../utils/makeRequest';
 
-let uploadPictureCoordinates: number[] = [];
+let uploadPictureCoordinates: [number, number] = [0, 0];
 
 export const Map = (): JSX.Element => {
   const [open, setOpen] = useState(false);
   const [pictureURL, setPictureURL] = useState('');
   const [pictureId, setPictureId] = useState('');
+  // const [uploadLoading, setUploadLoading] = useState(false);
   // const [uploadPictureCoordinates, setUploadPictureCoordinates] = useState<number[]>([]);
 
   const visitedCountries = useRef<any>([]);
@@ -26,6 +28,8 @@ export const Map = (): JSX.Element => {
   const map = useRef<any>(null);
   const markers = useRef<any>([]);
   const userCanEdit = useRef<boolean>(false);
+  const isUploadPhotoLoading = useRef<boolean>(false);
+  const currentUploadingPictureCoordinates = useRef<number[]>([]);
   const handleOpen = (): void => setOpen(true);
   const handleClose = (): void => setOpen(false);
 
@@ -183,7 +187,7 @@ export const Map = (): JSX.Element => {
 
     const parseFile = (file: File): void => {
       console.log(file);
-
+      isUploadPhotoLoading.current = true;
       const reader = new FileReader();
       reader.readAsArrayBuffer(file);
       let result;
@@ -234,6 +238,7 @@ export const Map = (): JSX.Element => {
 
         if (res === 'error') {
           console.log('error');
+          isUploadPhotoLoading.current = false;
 
           return;
         }
@@ -260,7 +265,7 @@ export const Map = (): JSX.Element => {
         el.style.backgroundSize = '100%';
         el.style.borderRadius = '50%';
         new mapboxgl.Marker(el)
-          .setLngLat([-83.2192398503004, 37.001400805161055])
+          .setLngLat(uploadPictureCoordinates)
           .addTo(map.current);
 
         el.addEventListener('click', () => {
@@ -285,18 +290,21 @@ export const Map = (): JSX.Element => {
 
     };
 
-    map.current.on('contextmenu', async (event: any) => {
+    const createUploadPopup = (event: any) => {
+      console.log(event);
       if (!userCanEdit.current) {
         return;
       }
 
       const el = document.createElement('div');
       const element = (
-        <div style={{ width: 100, height: 100 }} onClick={(): void => {
+        <div style={{ width: 100, height: 100, display: 'flex', flexDirection: 'column' }} onClick={(): void => {
           handleUploadClick();
           uploadPictureCoordinates = [event.lngLat.lng, event.lngLat.lat];
+          destr();
         }}>
-          click here to add photo
+          click to upload photo
+          <AdsClick style={{ width: 100, height: 60 }} />
           <input
             type='file'
             ref={hiddenFileInput}
@@ -307,12 +315,53 @@ export const Map = (): JSX.Element => {
       );
 
       createRoot(el).render(element);
+
       console.log([event.lngLat.lng, event.lngLat.lat]);
       const popup = new mapboxgl.Popup({ closeOnClick: false })
         .setLngLat([event.lngLat.lng, event.lngLat.lat])
         .setDOMContent(el)
         .addTo(map.current);
-    });
+
+      const destr = () => {
+        popup.remove();
+      };
+    };
+
+    const initIOSConextMenu = () => {
+      let iosTimeout: any = null;
+      const clearIosTimeout = () => {
+        clearTimeout(iosTimeout);
+      };
+
+      map.current.on('touchstart', (e: any) => {
+        if (e.originalEvent.touches.length > 1) {
+          return;
+        }
+
+        iosTimeout = setTimeout(() => {
+          createUploadPopup(e);
+        }, 1000);
+      });
+      map.current.on('touchend', clearIosTimeout);
+      map.current.on('touchcancel', clearIosTimeout);
+      map.current.on('touchmove', clearIosTimeout);
+      map.current.on('pointerdrag', clearIosTimeout);
+      map.current.on('pointermove', clearIosTimeout);
+      map.current.on('moveend', clearIosTimeout);
+      map.current.on('gesturestart', clearIosTimeout);
+      map.current.on('gesturechange', clearIosTimeout);
+      map.current.on('gestureend', clearIosTimeout);
+    };
+
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.platform);
+
+    if (isIOS) {
+      initIOSConextMenu();
+    } else {
+      map.current.on('contextmenu', createUploadPopup);
+    }
+
+    // map.current.on('contextmenu', createUploadPopup);
   };
 
   const deletePicture = (): void => {

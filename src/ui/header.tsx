@@ -13,13 +13,22 @@ export const Header = (): JSX.Element => {
   const { map: mapInfo, _id: userId } = useContext(UserContext);
   // console.log(user);
   const isUserRegistered = !!userId;
+  let isOnOwnMap = false;
 
+  if (window.location.pathname.includes('/map')) {
+    const currentMapId = window.location.pathname.split('/').pop();
+    if (currentMapId === mapInfo._id) {
+      isOnOwnMap = true;
+    }
+  }
+
+  console.log(window.location.pathname);
   const redirect = (path: string): void => {
     navigate(path);
   };
 
   return (
-    <AppBar style={{ display: 'flex', flexDirection: 'row', position: 'relative' }}>
+    <AppBar style={{ display: 'flex', flexDirection: 'row', position: 'absolute', backgroundColor: 'transparent', boxShadow: 'none' }}>
       {isUserRegistered ? <Button
         style={{ color: 'black', width: 200, backgroundColor: 'white', marginRight: 20 }}
         variant="outlined"
@@ -27,8 +36,8 @@ export const Header = (): JSX.Element => {
       >
         Play a game
       </Button> : null}
-      {isUserRegistered ? <Button
-        style={{ color: 'black', width: 200, backgroundColor: 'white' }}
+      {(isUserRegistered && !isOnOwnMap) ? <Button
+        style={{ color: 'black', width: 200, backgroundColor: 'white', zIndex: 1300 }}
         variant="outlined"
         onClick={(): void => redirect(`/map/${mapInfo._id}`)}
       >
