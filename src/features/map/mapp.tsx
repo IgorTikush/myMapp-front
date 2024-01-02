@@ -1,11 +1,11 @@
-import { Box, Button, Modal, CircularProgress } from '@mui/material';
+import { AdsClick } from '@mui/icons-material';
+import { Box, Button, Modal } from '@mui/material';
 import heic2any from 'heic2any';
 import mapboxgl from 'mapbox-gl';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { createRoot } from 'react-dom/client';
 import { useParams } from 'react-router-dom';
-import { AdsClick } from '@mui/icons-material';
 
 import { boxStyle } from './styles/picture-modal.style.tx';
 import { mapboxToken } from '../../../config';
@@ -16,7 +16,7 @@ import { makeRequest } from '../../utils/makeRequest';
 
 let uploadPictureCoordinates: [number, number] = [0, 0];
 
-export const Map = (): JSX.Element => {
+export const Mapp = (): JSX.Element => {
   const [open, setOpen] = useState(false);
   const [pictureURL, setPictureURL] = useState('');
   const [pictureId, setPictureId] = useState('');
@@ -96,25 +96,140 @@ export const Map = (): JSX.Element => {
         );
       });
 
-      markers.current.forEach((marker: any) => {
-        const el = document.createElement('div');
-        const width = 30;
-        const height = 30;
-        el.className = 'marker';
-        el.style.backgroundImage = `url(${marker.url})`;
-        el.style.width = `${width}px`;
-        el.style.height = `${height}px`;
-        el.style.backgroundSize = '100%';
-        el.style.borderRadius = '50%';
-        new mapboxgl.Marker(el)
-          .setLngLat(marker.coordinates)
-          .addTo(map.current);
+      const pictureFeatures = markers.current.map((marker: any) => ({
+        type: 'Feature',
+        properties: {
+          _id: marker._id,
+          url: marker.url,
+        },
+        geometry: {
+          type: 'Point',
+          coordinates: marker.coordinates,
+        },
+      }));
 
-        el.addEventListener('click', () => {
-          setPictureURL(marker.url);
-          setPictureId(marker._id);
-          handleOpen();
+      map.current.addSource('photos', {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features: pictureFeatures,
+        },
+        cluster: true,
+        clusterMaxZoom: 1000,
+        clusterRadius: 40,
+      });
+
+      map.current.addLayer({
+        id: 'clusters',
+        type: 'circle',
+        source: 'photos',
+        filter: ['has', 'point_count'],
+        paint: {
+          // 'circle-radius': 1,
+          'circle-color': 'red',
+        },
+      });
+
+      const markersMap: any = new Map();
+
+      const updateMarkers = () => {
+        const features = map.current.querySourceFeatures('photos');
+        console.log(map.current);
+        const keepMarkers: any = [];
+        for (let i = 0; i < features.length; i++) {
+          const marker = features[i];
+          console.log(marker);
+          const coords = features[ i ].geometry.coordinates;
+          const prope = features[ i ].properties;
+          const featureID = features[ i ].id;
+          const clusterID = prope.cluster_id || null;
+
+          if (prope.cluster && markersMap.has('cluster_'+clusterID)) {
+
+            // Cluster marker is already on screen
+            keepMarkers.push('cluster_'+clusterID);
+
+          } else if (prope.cluster) {
+            console.log('cluster');
+            // This feature is clustered, create an icon for it and use props.point_count for its count
+
+            const el = document.createElement('div');
+            el.className = 'mapCluster';
+            el.style.width = '30px';
+            el.style.height = '30px';
+            el.style.textAlign = 'center';
+            el.style.color = 'white';
+            el.style.background = '#16d3f9';
+            el.style.borderRadius = '50%';
+            el.innerText = prope.point_count;
+            const clusterMarker = new mapboxgl.Marker(el).setLngLat(coords);
+            clusterMarker.addTo(map.current);
+            keepMarkers.push('cluster_'+featureID);
+            markersMap.set('cluster_'+clusterID,el);
+
+          } else if (markersMap.has(featureID)) {
+
+            // Feature marker is already on screen
+            keepMarkers.push(featureID);
+
+          } else {
+            console.log('real maker');
+            const el = document.createElement('div');
+            const width = 30;
+            const height = 30;
+            el.className = 'marker';
+            el.style.backgroundImage = `url(${marker.properties.url})`;
+            el.style.width = `${width}px`;
+            el.style.height = `${height}px`;
+            el.style.backgroundSize = '100%';
+            el.style.borderRadius = '50%';
+            console.log(el);
+            new mapboxgl.Marker(el)
+              .setLngLat(coords)
+              .addTo(map.current);
+
+            el.addEventListener('click', () => {
+              setPictureURL(marker.url);
+              setPictureId(marker._id);
+              handleOpen();
+            });
+
+            // Feature is not clustered and has not been created, create an icon for it
+            // const el = new Image();
+            // el.style.backgroundImage = 'url(https://placekitten.com/g/50/50)';
+            // el.className = 'mapMarker';
+            // el.style.width = '50px';
+            // el.style.height = '50px';
+            // el.style.borderRadius = '50%';
+            // el.dataset.type = props.type;
+            // const marker = new mapboxgl.Marker(el).setLngLat(coords);
+            // marker.addTo(map);
+            // keepMarkers.push(featureID);
+            // markers.set(featureID,el);
+
+          }
+
+        }
+
+        // Let's clean-up any old markers. Loop through all markers
+        markersMap.forEach((value: any, key: any, map: any) => {
+          if (keepMarkers.indexOf(key) === -1) {
+            console.log('deleting key: '+key);
+            value.remove();
+            map.delete(key);
+          }
         });
+
+      };
+
+      map.current.on('data', (event: any) => {
+        // console.log('data', event.sourceId, event.isSourceLoaded);
+        if (event.sourceId !== 'photos' || !event.isSourceLoaded) {
+          return;
+        }
+
+        map.current.on('moveend', updateMarkers);
+        updateMarkers();
       });
     });
 

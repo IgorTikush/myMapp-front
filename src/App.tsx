@@ -7,7 +7,7 @@ import { Registration } from './features/auth/Registration';
 import { GameIndex } from './features/game';
 import { Landing } from './features/landing';
 import { Home } from './features/map/home';
-import { Map } from './features/map/map';
+import { Mapp } from './features/map/mapp';
 import { useUser } from './hooks/user.hook';
 import { Footer } from './ui/footer';
 import { Header } from './ui/header';
@@ -39,13 +39,13 @@ export const App = (): JSX.Element => {
           <Route path="/map/:id" element={
             <Private isProceedAnyway={true}>
               <>
-                <Map />
+                <Mapp />
               </>
             </Private>
           } />
           <Route path="/map" element={
             <Private>
-              <Map />
+              <Mapp />
             </Private>
           } />
         </Routes>
