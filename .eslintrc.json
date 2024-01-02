@@ -10,8 +10,8 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:import/recommended",
     "plugin:import/typescript",
-    "plugin:react-hooks/recommended"
-//    "@typescript-eslint/no-unused-vars"
+    "plugin:react-hooks/recommended",
+    "@typescript-eslint/no-unused-vars"
   ],
   "parser": "@typescript-eslint/parser",
   "plugins": [
@@ -279,9 +279,6 @@
         }
       }
     ],
-    "@typescript-eslint/explicit-function-return-type": [
-      "off"
-    ],
     "@typescript-eslint/no-empty-interface": [
       "warn"
     ],
@@ -363,12 +360,6 @@
     ],
     "import/namespace": [
       "off"
-    ],
-    "@typescript-eslint/no-unused-vars": [
-      "warn",
-      {
-        "varsIgnorePattern": "_"
-      }
     ]
   },
   "overrides": [

@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { UserContext } from '../context/userContext';
 import { useUser } from '../hooks/user.hook';
+import { headerButton } from './styles/header';
 
 export const Header = (): JSX.Element => {
   const navigate = useNavigate();
@@ -29,27 +30,9 @@ export const Header = (): JSX.Element => {
 
   return (
     <AppBar style={{ display: 'flex', flexDirection: 'row', position: 'absolute', backgroundColor: 'transparent', boxShadow: 'none' }}>
-      {isUserRegistered ? <Button
-        style={{ color: 'black', width: 200, backgroundColor: 'white', marginRight: 20 }}
-        variant="outlined"
-        onClick={(): void => redirect('/game')}
-      >
-        Play a game
-      </Button> : null}
-      {(isUserRegistered && !isOnOwnMap) ? <Button
-        style={{ color: 'black', width: 200, backgroundColor: 'white', zIndex: 1300 }}
-        variant="outlined"
-        onClick={(): void => redirect(`/map/${mapInfo._id}`)}
-      >
-        My map
-      </Button> : null}
-      {!isUserRegistered ? <Button
-        style={{ color: 'black', width: 200, backgroundColor: 'white' }}
-        variant="outlined"
-        onClick={(): void => redirect('/signup')}
-      >
-        Sign up
-      </Button> : null}
+      {isUserRegistered ? headerButton(() => redirect('/game'), 'Play game') : null}
+      {(isUserRegistered && !isOnOwnMap) ? headerButton(() => redirect(`/map/${mapInfo._id}`), 'My map') : null}
+      {!isUserRegistered ? headerButton(() => redirect('/signup'), 'Sign up') : null}
     </AppBar>
   );
 };
