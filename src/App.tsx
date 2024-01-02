@@ -9,8 +9,7 @@ import { Landing } from './features/landing';
 import { Home } from './features/map/home';
 import { Mapp } from './features/map/mapp';
 import { useUser } from './hooks/user.hook';
-import { Footer } from './ui/footer';
-import { Header } from './ui/header';
+import { AutoLogin } from './utils/autoLogin';
 import { Private } from './utils/privateRoute';
 import './stylesheet.css';
 
@@ -22,9 +21,21 @@ export const App = (): JSX.Element => {
       <UserContext.Provider value={user}>
         <Routes>
           {/* Public routes */}
-          <Route path="/signup" element={<Registration />} />
-          <Route path="/signin" element={<Login />} />
-          <Route index element={<Landing />} />
+          <Route path="/signup" element={
+            <AutoLogin>
+              <Registration />
+            </AutoLogin>
+          } />
+          <Route path="/signin" element={
+            <AutoLogin>
+              <Login />
+            </AutoLogin>
+          } />
+          <Route index element={
+            <AutoLogin>
+              <Landing />
+            </AutoLogin>
+          } />
           {/* Private routes */}
           <Route path="/home" element={
             <Private>
