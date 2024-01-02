@@ -22,7 +22,7 @@ const copyPlugin = new CopyPlugin(
 );
 
 export default {
-  devtool: 'source-map',
+  // devtool: 'source-map',
   mode: 'production',
   entry: './src/index.tsx',
   output: {
