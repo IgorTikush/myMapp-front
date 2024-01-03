@@ -61,7 +61,7 @@ export const GameLogic = (props: IGameLogic): JSX.Element => {
     setScore((prev) => prev + 1);
   };
 
-  const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+  const handleClose = () => {
     setOpen(false);
   };
 
@@ -104,6 +104,12 @@ export const GameLogic = (props: IGameLogic): JSX.Element => {
             0.7,
           ],
         },
+      });
+
+      map.current.style.stylesheet.layers.forEach((layer: mapboxgl.Layer) => {
+        if (layer.type === 'symbol') {
+          map.current.removeLayer(layer.id);
+        }
       });
     });
 
