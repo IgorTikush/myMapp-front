@@ -189,7 +189,7 @@ export const Mapp = (): JSX.Element => {
               .addTo(map.current);
 
             el.addEventListener('click', () => {
-              setPictureURL(marker.url);
+              setPictureURL(marker.properties.url);
               setPictureId(marker._id);
               handleOpen();
             });
